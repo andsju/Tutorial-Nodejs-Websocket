@@ -50,3 +50,12 @@ Create a empty index.html in a folder named public.
 [Go to part 1: Basic Websocket](part-1.md)
 
 ***
+
+#### 2 Send, receive and validate messages
+- Listen to WebSocket event: message, error
+- Server side
+- Client side
+
+[Go to part 2: Send, receive and validate messages](part-2.md)
+
+***
