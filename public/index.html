@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebSocket part 4</title>
+    <title>WebSocket part 5</title>
     <link rel="stylesheet" href="styles/style.css">
 </head>
 
@@ -17,6 +17,8 @@
     <button id="buttonNickname">Enter chat</button>
     <hr>
     <input type="text" id="inputText" placeholder="Type and press Enter" class="hidden">
+
+    <ul id="online"></ul>
 
     <ul id="conversation">
     </ul>
@@ -33,33 +35,8 @@
     <!-- ECMAScript module -->
     <script type="module">
 
-        import { parse, addMessage, formatDate, postData, getCookie } from './js/functions.js';
-
-        // use WebSocket
-        const websocket = new WebSocket("ws://localhost:8081");
-
-        // listen on close event
-        websocket.addEventListener('close', (event) => {
-            console.log('Server down...', event);
-        });
-
-        // get data property from MessageEvent using object destructing
-        websocket.addEventListener("message", ({data}) => {
-
-            let obj = parse(data);
-
-            // use property 'type' to handle message event
-            switch (obj.type) {
-                case 'chat':
-
-                    // display chat message 
-                    addMessage(obj.data.nickname, obj.data.text, new Date(obj.data.date));
-                    break;
-            
-                default:
-                    break;
-            }
-        });
+        // an array keeping keys pressed
+        let lastKeys = [];
 
         // variables and event listeners
         let nickname; 
@@ -72,6 +49,7 @@
             buttonNickname.classList.toggle("hidden");
             inputText.classList.toggle("hidden");
             inputText.focus();
+            document.title = nickname;
         }
         
         buttonNickname.addEventListener("click", () => {
@@ -95,10 +73,15 @@
 
         // listen to keydown event, send message
         inputText.addEventListener("keydown", (event) => {
+
+            // display local chat message () 
+            let date = new Date();
+
+            // update time when key pressed
+            lastKeys.push((date.getTime()));
+            
             if (event.code === "Enter" && inputText.value.length > 0) {
 
-                // display local chat message () 
-                let date = new Date();
 
                 // add message to DOM
                 addMessage(nickname, inputText.value, date);
@@ -109,8 +92,89 @@
 
                 // reset field
                 inputText.value = "";
+
+            }
+
+
+        });
+
+
+        import { parse, addMessage, formatDate, postData, getCookie, displayOnline } from './js/functions.js';
+
+        // use WebSocket
+        const websocket = new WebSocket("ws://localhost:8081?nickname="+nickname+"");
+
+        // listen on close event
+        websocket.addEventListener('close', (event) => {
+            console.log('Server down...', event);
+        });
+
+        // get data property from MessageEvent using object destructing
+        websocket.addEventListener("message", ({data}) => {
+
+            let obj = parse(data);
+
+            // use property 'type' to handle message event
+            switch (obj.type) {
+
+                case 'chat':
+
+                    // display chat message 
+                    addMessage(obj.data.nickname, obj.data.text, new Date(obj.data.date));
+                    break;
+                case 'online':
+                    displayOnline(obj.nicknames)
+                    break;
+                case 'joinChat':
+                    console.log(obj);
+                    break;
+                case 'leaveChat':
+                    console.log(obj);
+                    break;
+                case 'isTyping':
+                    let lis = document.querySelector("#online").childNodes;
+                    lis.forEach(li => {
+                        if (li.innerText === obj.nickname) {
+                            li.style.color = "yellow";
+                        }
+                    })
+                    break;
+                default:
+                    break;
             }
         });
+
+        websocket.addEventListener('open', () => {
+
+            let obj = {type: "online"};
+            websocket.send(JSON.stringify(obj));
+
+            setInterval(() => {
+                let obj = {type: "online"};
+                websocket.send(JSON.stringify(obj));
+            }, 10000);
+
+            setInterval(() => {
+
+                let obj = {type: "isTyping", status: false};
+                if (lastKeys.length > 2) {
+
+                    // is typing
+                    let diff = lastKeys[lastKeys.length-1] - lastKeys[lastKeys.length-3];               
+                    if (diff < 2000) {
+                        obj.status = true;
+                        lastKeys.pop();
+                    }
+
+                    // reset if idle
+                    let time = new Date();
+                    if (time.getTime() - lastKeys[lastKeys.length-1] > 1000) {
+                        obj.status = false;
+                    }
+                }
+                websocket.send(JSON.stringify(obj));
+            }, 2000);
+        })
 
     </script>
 

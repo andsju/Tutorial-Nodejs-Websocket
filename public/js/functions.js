@@ -69,3 +69,16 @@ export function getCookie(name) {
     
     return;
 }
+
+export function displayOnline(list) {
+
+    let ul = document.querySelector("ul#online");
+
+    ul.innerHTML = "";
+    list.forEach(element => {
+        let li = document.createElement("li");
+        li
+        li.textContent = element;
+        ul.appendChild(li);
+    });
+}

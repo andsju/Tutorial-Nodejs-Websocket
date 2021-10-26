@@ -1,7 +1,7 @@
 import express from 'express';
 import http from 'http';
 import WebSocket,  {WebSocketServer } from 'ws';
-import { parse } from './libs/functions.js';
+import { parse, getValueFromKey, removeFromArray } from './libs/functions.js';
 
 const app = express();
 const port = process.env.PORT || 8081;
@@ -67,10 +67,20 @@ server.listen(port, (req, res) => {
 });
 
 
+let usersOnline = [];
+
 // listen to WebSocket Server (wss) connections
-wss.on('connection', (ws) => {
+wss.on('connection', (ws, req) => {
     console.log('Client connected from IP: ', ws._socket.remoteAddress);
     console.log('Number of connected clients: ', wss.clients.size);
+
+    // get nickname from querystring, broadcast
+    let nickname = getValueFromKey(req.url, "nickname");
+    if (nickname !== "undefined") {
+        let obj = {type: "joinChat", nickname: nickname};
+        usersOnline.push(nickname);
+        wss.broadcast(JSON.stringify(obj), ws);    
+    }
 
     // WebSocket events (ws) for a single client
     // --------------------
@@ -78,17 +88,22 @@ wss.on('connection', (ws) => {
     // close event
     ws.on('close', () => {
         console.log('Client disconnected\n');
-        let objReply = {
-            type: "message",
-            data: "Another client disconnected"
+
+        console.log("remove from list", nickname);
+
+        usersOnline = removeFromArray(nickname, usersOnline);
+
+        let obj = {
+            type: "leaveChat",
+            data: nickname
         }
-        wss.broadcastButExclude(JSON.stringify(objReply), ws);
+        wss.broadcast(JSON.stringify(obj));
     });
 
     // message event
     ws.on('message', (data) => {
         let obj = parse(data);
-        console.log('Message received: %O', obj);
+        // console.log('Message received: %O', obj);
 
         // use property 'type' to handle message event
         switch (obj.type) {
@@ -96,8 +111,27 @@ wss.on('connection', (ws) => {
             case "chat":
                 wss.broadcastButExclude(JSON.stringify(obj), ws);
                 break;
+            case "leaveChat":
+                    obj = {type: "leaveChat", nickname: nickname};
+                    wss.broadcastButExclude(JSON.stringify(obj), ws);
+                    break;
+            case "joinChat":
+                    obj = {type: "joinChat", nickname: nickname};
+                    wss.broadcastButExclude(JSON.stringify(obj), ws);
+                    break;
+            case "online":
+                    obj = {type: "online", nicknames: usersOnline};
+                    wss.broadcast(JSON.stringify(obj));
+                    break;
+            case "isTyping":
+                if (obj.status) {
+                    console.log(`${nickname} is typing....`);
+                    obj = {type: "isTyping", nickname: nickname};
+                    wss.broadcastButExclude(JSON.stringify(obj), ws);
+                }
+            break;
             default:
-                console.log("Message type is:", obj.type)
+                    console.log("Message type is:", obj.type)
                 break;
         }
 
