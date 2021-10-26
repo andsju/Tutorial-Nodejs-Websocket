@@ -1,0 +1,19 @@
+{
+  "name": "tutorial-nodejs-websocket",
+  "version": "1.0.0",
+  "description": "Tutorial WebSocket chat application",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andsju/Tutorial-Nodejs-Websocket.git"
+  },
+  "author": "andsju",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/andsju/Tutorial-Nodejs-Websocket/issues"
+  },
+  "homepage": "https://github.com/andsju/Tutorial-Nodejs-Websocket#readme"
+}
