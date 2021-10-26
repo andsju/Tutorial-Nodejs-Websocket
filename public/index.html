@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebSocket part 3</title>
+    <title>WebSocket part 4</title>
     <link rel="stylesheet" href="styles/style.css">
 </head>
 
@@ -33,7 +33,7 @@
     <!-- ECMAScript module -->
     <script type="module">
 
-        import { parse, addMessage, formatDate } from './js/functions.js';
+        import { parse, addMessage, formatDate, postData, getCookie } from './js/functions.js';
 
         // use WebSocket
         const websocket = new WebSocket("ws://localhost:8081");
@@ -62,27 +62,34 @@
         });
 
         // variables and event listeners
-        let nickname;
+        let nickname; 
+        
+        nickname = getCookie("nickname");
 
-        const inputNickname = document.getElementById("inputNickname");
-        const buttonNickname = document.getElementById("buttonNickname");
-        const inputText = document.getElementById("inputText"); 
-
-        inputNickname.focus();
+        if (nickname !== undefined) {
+            inputNickname.value = nickname;
+            inputNickname.setAttribute("disabled", "disabled");
+            buttonNickname.classList.toggle("hidden");
+            inputText.classList.toggle("hidden");
+            inputText.focus();
+        }
         
         buttonNickname.addEventListener("click", () => {
             nickname = inputNickname.value;
+
             if (nickname.length > 2) {
 
-                // disable element
-                inputNickname.setAttribute("disabled", "disabled");
-                
-                // hide button
-                buttonNickname.classList.toggle("hidden");
+                postData('/authenticate', {nickname: nickname})
+                .then(data => {
+                    if (data.authenticated === true) {
+                        
+                        document.cookie = "nickname="+nickname+"; max-age="+5;
+                        location.reload(false);
 
-                // display field for new text messages - focus element to set a cursor
-                inputText.classList.toggle("hidden");
-                inputText.focus();
+                    } else {
+                        inputNickname.value = "Not a proper nickname..."
+                    } 
+                });
             }
         });
 

@@ -37,3 +37,35 @@ export function formatDate(date) {
 
     return hours + ":" +  minutes + ":" + seconds;
 }
+
+export async function postData(url, data) {
+
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    });
+
+    return response.json();
+}
+
+export function getCookie(name) {
+    
+    // split to name=value pairs in an array
+    let cookies = document.cookie.split(";");
+
+    // loop array elements
+    for (let i = 0; i < cookies.length; i++) {
+        let pair = cookies[i].split("=");
+        
+        // check name 
+        if(name === pair[0]) {
+            
+            return pair[1];
+        }
+    }
+    
+    return;
+}

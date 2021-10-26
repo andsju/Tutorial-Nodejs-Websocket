@@ -68,3 +68,11 @@ Create a empty index.html in a folder named public.
 [Go to part 3: Chat application](part-3.md)
 
 ***
+
+#### 4 Add Express to chat application
+- authentication before using websockets
+- sessions
+- routes
+- cookies
+
+[Go to part 4: Add Express to chat application](part-4.md)
