@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/andsju/Tutorial-Nodejs-Websocket/issues"
   },
-  "homepage": "https://github.com/andsju/Tutorial-Nodejs-Websocket#readme"
+  "homepage": "https://github.com/andsju/Tutorial-Nodejs-Websocket#readme",
+  "dependencies": {
+    "ws": "^8.2.3"
+  }
 }

@@ -41,3 +41,12 @@ Create a empty index.html in a folder named public.
 ...and you're ready for this tutorial.
 
 ***
+
+#### 1 Basic Websocket
+- Setup a basic WebSocket server using node.js **ws** library.
+- Setup a client html page
+- Listen to WebSocket events: connection, open, close
+
+[Go to part 1: Basic Websocket](part-1.md)
+
+***
