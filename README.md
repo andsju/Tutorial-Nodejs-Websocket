@@ -49,6 +49,7 @@ Create a empty index.html in a folder named public.
 
 [Go to part 1: Basic Websocket](part-1.md)
 
+Branch *basic*
 ***
 
 #### 2 Send, receive and validate messages
@@ -58,6 +59,7 @@ Create a empty index.html in a folder named public.
 
 [Go to part 2: Send, receive and validate messages](part-2.md)
 
+Branch *messages*
 ***
 
 #### 3 Chat application
@@ -67,6 +69,7 @@ Create a empty index.html in a folder named public.
 
 [Go to part 3: Chat application](part-3.md)
 
+Branch *chat*
 ***
 
 #### 4 Add Express to chat application
@@ -77,9 +80,17 @@ Create a empty index.html in a folder named public.
 
 [Go to part 4: Add Express to chat application](part-4.md)
 
+Branch *express*
+***
+
 #### 5 Who is online
 - online users
 - join and leave chat
 - features, is typing
 
 [Go to part 5: Who is online](part-5.md)
+
+Branch *features*
+
+***
+***
