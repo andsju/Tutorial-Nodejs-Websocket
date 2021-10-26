@@ -59,3 +59,12 @@ Create a empty index.html in a folder named public.
 [Go to part 2: Send, receive and validate messages](part-2.md)
 
 ***
+
+#### 3 Chat application
+- ES6 client side modules 
+- Setup a JavaScript chat application in DOM (template | document fragment)
+- Add some features ...
+
+[Go to part 3: Chat application](part-3.md)
+
+***

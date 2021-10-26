@@ -1,16 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebSocket part 2</title>
+    <title>WebSocket part 3</title>
+    <link rel="stylesheet" href="styles/style.css">
 </head>
-<body>
 
 <body>
 
-    <script>
+    <h1>Time to chat!</h1>
+
+    <input type="text" id="inputNickname" maxlength="8" placeholder="Your name (3-8 characters)">
+    <button id="buttonNickname">Enter chat</button>
+    <hr>
+    <input type="text" id="inputText" placeholder="Type and press Enter" class="hidden">
+
+    <ul id="conversation">
+    </ul>
+
+    <!-- template to clone -->
+    <template id="message">
+        <li>
+            <span></span>
+            <p></p>
+            <time datetime=""></time>
+        </li>
+    </template>
+
+    <!-- ECMAScript module -->
+    <script type="module">
+
+        import { parse, addMessage, formatDate } from './js/functions.js';
 
         // use WebSocket
         const websocket = new WebSocket("ws://localhost:8081");
@@ -22,19 +45,65 @@
 
         // get data property from MessageEvent using object destructing
         websocket.addEventListener("message", ({data}) => {
-            console.log(parse(data));
+
+            let obj = parse(data);
+
+            // use property 'type' to handle message event
+            switch (obj.type) {
+                case 'chat':
+
+                    // display chat message 
+                    addMessage(obj.data.nickname, obj.data.text, new Date(obj.data.date));
+                    break;
+            
+                default:
+                    break;
+            }
         });
 
+        // variables and event listeners
+        let nickname;
 
-        // functions
-        function parse(data) {
-            try {
-                return JSON.parse(data);
-            } catch (error) {
-                console.log('Error parsing expected json data: ', error);
-                return;
+        const inputNickname = document.getElementById("inputNickname");
+        const buttonNickname = document.getElementById("buttonNickname");
+        const inputText = document.getElementById("inputText"); 
+
+        inputNickname.focus();
+        
+        buttonNickname.addEventListener("click", () => {
+            nickname = inputNickname.value;
+            if (nickname.length > 2) {
+
+                // disable element
+                inputNickname.setAttribute("disabled", "disabled");
+                
+                // hide button
+                buttonNickname.classList.toggle("hidden");
+
+                // display field for new text messages - focus element to set a cursor
+                inputText.classList.toggle("hidden");
+                inputText.focus();
             }
-        }
+        });
+
+        // listen to keydown event, send message
+        inputText.addEventListener("keydown", (event) => {
+            if (event.code === "Enter" && inputText.value.length > 0) {
+
+                // display local chat message () 
+                let date = new Date();
+
+                // add message to DOM
+                addMessage(nickname, inputText.value, date);
+
+                // send to websocket server  
+                let obj = {type: "chat", data: {nickname: nickname, text: inputText.value, date: date}}
+                websocket.send(JSON.stringify(obj));
+
+                // reset field
+                inputText.value = "";
+            }
+        });
 
     </script>
 
