@@ -103,7 +103,7 @@
 
         // use WebSocket
         // const websocket = new WebSocket("ws://localhost:8081?nickname="+nickname+"");
-        const websocket = new WebSocket("ws://chat-159753.herokuapp.com?nickname="+nickname+"");
+        const websocket = new WebSocket("wss://chat-159753.herokuapp.com?nickname="+nickname+"");
 
         // listen on close event
         websocket.addEventListener('close', (event) => {
