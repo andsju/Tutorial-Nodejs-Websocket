@@ -13,7 +13,7 @@ We will use WebSocket library **ws**
 Create a new folder, start up terminal and run cmd:
 ```npm init```
 
-Entry point for firing up the server will be *server.mjs* instead of the default *index.js*.
+Entry point for firing up the server will be *server.js* instead of the default *index.js*.
 
 
 Start server cmd:
@@ -86,7 +86,7 @@ Branch *express*
 #### 5 Who is online
 - online users
 - join and leave chat
-- features, is typing
+- feature: is typing
 
 [Go to part 5: Who is online](part-5.md)
 

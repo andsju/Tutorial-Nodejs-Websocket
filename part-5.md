@@ -3,8 +3,8 @@
 #### 5 Who is online
 - online users
 - join and leave chat
-- features
-- 
+- feature: is typing
+  
 ***
 
 ### Client side first steps
