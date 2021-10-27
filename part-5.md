@@ -173,11 +173,11 @@ To get data from server who's online, use setInterval on the client sidde to req
             setInterval(() => {
                 let obj = {type: "online"};
                 websocket.send(JSON.stringify(obj));
-            }, 1000);
+            }, 10000);
         })
 ```
 
-Back to server side script. Time to route incoming websocket message. Broadcast joinChat and leaveChat messages. An  incoming message from client with the type *online* shoul just be sent to that client, no broadcast.
+Back to server side script. Time to route incoming websocket message. Broadcast joinChat and leaveChat messages. Incoming message from client with the type *online* should just be sent to that client, no broadcast.
 
 #### Server side
 ```javascript
@@ -237,7 +237,11 @@ Back to server side script. Time to route incoming websocket message. Broadcast 
 
 ```
 
-A feature in a chat application is to show if a user is typing. This feature keeps a history when a user press a key.
+***
+
+#### Is typing
+
+A feature in a chat application is to show if a user is typing. This feature keeps a history every time a user press a key.
 Create an array in *index.html*
 
 ```javascript
@@ -247,7 +251,7 @@ Create an array in *index.html*
 
 ```
 
-In the event listener for keydown, we push current time to the array lastKeys.  
+In the event listener for keydown, we push a current time to the array lastKeys.  
 
 ```javascript
 
@@ -264,7 +268,8 @@ In the event listener for keydown, we push current time to the array lastKeys.
 
                 // ...
 ```
-To handle a person joining the chat app, we must check if he/her is actually typing - or just idle. A setInterval function will do the job. This in one approach - use 2 different setInterval functions. The first function handles an online user list, and the second checks if a user is typing - or doing something else.  
+
+To handle a person joining the chat app, we must check if he/her is actually typing - or just idle. A setInterval function will do the job. This in one approach - use 2 different setInterval functions: The first function handles an online user list, and the second checks if a user is typing - or doing something else.  
 
 ```javascript
 
