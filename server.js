@@ -4,7 +4,7 @@ import WebSocket,  {WebSocketServer } from 'ws';
 import { parse, getValueFromKey, removeFromArray } from './libs/functions.js';
 
 const app = express();
-const port = process.env.PORT || 8081;
+const port = process.env.PORT || 80;
 
 app.use(express.static('public'));
 
